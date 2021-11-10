@@ -1,18 +1,14 @@
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
 const app = express()
-const morgan = require('morgan')
 const port = 3000
+
+const { carikontak, ambilkontak } = require('./utils/contacts')
 
 app.set('view engine', 'ejs')
 app.use(expressLayouts)
 app.use(express.static('public'))
-app.use(morgan('dev'))
 
-// app.use((req, res, next) => {
-//     console.log('Time: ', Date.now())
-//     next()
-// })
 
 app.get('/', (req, res) => {
 
@@ -48,16 +44,27 @@ app.get('/about', (req, res) => {
 })
 
 app.get('/kontak', (req, res) => {
+    const contacts = ambilkontak()
+
     res.render('kontak', {
         layout: 'template/main-layout',
         aktif: 2,
-        title: 'kontak'
+        title: 'kontak',
+        contacts
     })
 })
 
-app.get('/kontak/:id', (req, res) => {
-    res.send(`kontak id: ${req.params.id}`)
+app.get('/kontak/:nama', (req, res) => {
+    const contact = carikontak(req.params.nama)
+
+    res.render('detail', {
+        layout: 'template/main-layout',
+        aktif: 2,
+        title: 'Detail kontak',
+        contact
+    })
 })
+
 
 app.use('/', (req, res) => {
     res.status(404)
