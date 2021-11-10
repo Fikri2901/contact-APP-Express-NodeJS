@@ -22,5 +22,21 @@ const carikontak = (nama) => {
     return cari
 }
 
+const SimpanKontak = (contacts) => {
+    fs.writeFileSync('data/contact.json', JSON.stringify(contacts))
+}
 
-module.exports = { ambilkontak, carikontak }
+const tambahKontak = (contact) => {
+    const contacts = ambilkontak()
+    contacts.push(contact)
+    SimpanKontak(contacts)
+}
+
+const cekDuplikat = (nama) => {
+    const contacts = ambilkontak();
+    const cari = contacts.find((contact) => contact.nama == nama)
+    return cari
+}
+
+
+module.exports = { ambilkontak, carikontak, tambahKontak, cekDuplikat }

@@ -2,12 +2,25 @@ const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
 const app = express()
 const port = 3000
+const { body, validationResult, check } = require('express-validator')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+const flash = require('connect-flash')
 
-const { carikontak, ambilkontak } = require('./utils/contacts')
+const { carikontak, ambilkontak, tambahKontak, cekDuplikat } = require('./utils/contacts')
 
 app.set('view engine', 'ejs')
 app.use(expressLayouts)
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser('secret'))
+app.use(session({
+    cookie: { maxAge: 6000 },
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
+app.use(flash())
 
 
 app.get('/', (req, res) => {
@@ -50,9 +63,41 @@ app.get('/kontak', (req, res) => {
         layout: 'template/main-layout',
         aktif: 2,
         title: 'kontak',
-        contacts
+        contacts,
+        msg: req.flash('msg')
     })
 })
+
+app.post('/kontak',
+    body('nama', 'Nama tidak boleh kosong !!').notEmpty().custom((value) => {
+        const duplikat = cekDuplikat(value)
+        if (duplikat) {
+            throw new Error('Nama kontak sudah digunakan !!')
+        }
+        return true
+    }),
+    body('email', 'Email tidak valid !!').isEmail(),
+    body('nomor', 'Nomor Telephone tidak valid !!').isMobilePhone('id-ID'),
+    (req, res) => {
+        const contacts = ambilkontak()
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // return res.status(400).json({ errors: errors.array() });
+            res.render('kontak', {
+                layout: 'template/main-layout',
+                aktif: 2,
+                title: 'kontak',
+                contacts,
+                msg: req.flash('msg'),
+                errors: errors.array()
+            })
+        } else {
+            tambahKontak(req.body)
+            req.flash('msg', 'Data Berhasil ditambahkan !!')
+            res.redirect('/kontak')
+        }
+
+    })
 
 app.get('/kontak/:nama', (req, res) => {
     const contact = carikontak(req.params.nama)

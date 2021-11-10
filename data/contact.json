@@ -1,16 +1,1 @@
-[{
-        "nama": "fikri",
-        "nomor": "099099099099",
-        "email": "fikri@gmail.com"
-    },
-    {
-        "nama": "Dani",
-        "nomor": "999999999999",
-        "email": "Dani@gmail.com"
-    },
-    {
-        "nama": "fina",
-        "nomor": "081234567",
-        "email": "fina@gmail.com"
-    }
-]
+[{"nama":"fikri","nomor":"099099099099","email":"fikri@gmail.com"},{"nama":"Dani","nomor":"999999999999","email":"Dani@gmail.com"},{"nama":"fina","nomor":"081234567","email":"fina@gmail.com"},{"nama":"Sepatu","email":"sepatu@gmail.com","nomor":"083833833833"},{"nama":"miftah","email":"miftah@gmail.com","nomor":"08123456789"},{"nama":"baju","email":"baju@gmail.com","nomor":"084844844844"},{"nama":"dimas","email":"dimas@gmail.com","nomor":"0858828222"},{"nama":"dodik","email":"dodik@gmail.com","nomor":"085755755755"}]
