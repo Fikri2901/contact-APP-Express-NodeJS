@@ -38,5 +38,19 @@ const cekDuplikat = (nama) => {
     return cari
 }
 
+const hapusKontak = (nama) => {
+    const contacts = ambilkontak();
+    const filter = contacts.filter((contact) => contact.nama !== nama)
+    SimpanKontak(filter);
+}
 
-module.exports = { ambilkontak, carikontak, tambahKontak, cekDuplikat }
+const updateKontak = (kontakBaru) => {
+    const contacts = ambilkontak();
+    const filter = contacts.filter((contact) => contact.nama !== kontakBaru.oldnama)
+    delete kontakBaru.oldnama
+    filter.push(kontakBaru)
+    SimpanKontak(filter)
+}
+
+
+module.exports = { ambilkontak, carikontak, tambahKontak, cekDuplikat, hapusKontak, updateKontak }

@@ -18,10 +18,44 @@
                             <p class="card-text">
                                 <%= contact.email %>
                             </p>
-                            <a href="/kontak" class="card-link">&laquo; Kembali</a>
+                            <a href="#" class="btn btn-warning badge rounded-pill" data-bs-toggle="modal" data-bs-target="#modalEdit"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a href="/kontak/delete/<%= contact.nama %>" class="btn btn-danger badge rounded-pill" onclick="return confirm('Yakin Mau Hapus?');"><i class="bi bi-trash"></i></a><br>
+                            <a href="/kontak" class="card-link d-block mt-3">&laquo; Kembali</a>
                         </div>
                     </div>
                     <% } %>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit data kontak</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/kontak/update" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="oldnama" value="<%= contact.nama %>">
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama" value="<%= contact.nama %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan email" value="<%= contact.email %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nomor" class="form-label">Nomor Telp</label>
+                            <input type="text" class="form-control" id="nomor" name="nomor" placeholder="Masukkan Nomor Telp" value="<%= contact.nomor %>">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Ubah</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

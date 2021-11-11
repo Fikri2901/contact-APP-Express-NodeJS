@@ -7,7 +7,7 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 
-const { carikontak, ambilkontak, tambahKontak, cekDuplikat } = require('./utils/contacts')
+const { carikontak, ambilkontak, tambahKontak, cekDuplikat, hapusKontak, updateKontak } = require('./utils/contacts')
 
 app.set('view engine', 'ejs')
 app.use(expressLayouts)
@@ -98,6 +98,50 @@ app.post('/kontak',
         }
 
     })
+
+app.post('/kontak/update',
+    body('nama', 'Nama tidak boleh kosong !!').notEmpty().custom((value, { req }) => {
+        const duplikat = cekDuplikat(value)
+        if (value !== req.body.oldnama && duplikat) {
+            throw new Error('Nama kontak sudah digunakan !!')
+        }
+        return true
+    }),
+    body('email', 'Email tidak valid !!').isEmail(),
+    body('nomor', 'Nomor Telephone tidak valid !!').isMobilePhone('id-ID'),
+    (req, res) => {
+        const contacts = ambilkontak()
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // return res.status(400).json({ errors: errors.array() });
+            res.render('kontak', {
+                layout: 'template/main-layout',
+                aktif: 2,
+                title: 'kontak',
+                contacts,
+                msg: req.flash('msg'),
+                errors: errors.array(),
+                contact: req.body
+            })
+        } else {
+            updateKontak(req.body)
+            req.flash('msg', 'Data Berhasil diupdate !!')
+            res.redirect('/kontak')
+        }
+
+    })
+
+app.get('/kontak/delete/:nama', (req, res) => {
+    const contact = carikontak(req.params.nama)
+    if (!contact) {
+        res.status(404)
+        res.send('<h1>404</h1>')
+    } else {
+        hapusKontak(req.params.nama)
+        req.flash('msg', 'Data berhasil dihapus !!')
+        res.redirect('/kontak')
+    }
+})
 
 app.get('/kontak/:nama', (req, res) => {
     const contact = carikontak(req.params.nama)
